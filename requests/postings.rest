@@ -1,0 +1,45 @@
+@baseUrl = http://localhost:5050
+# Після POST підставте отриманий id замість 4, якщо сервер уже змінювався.
+@postingId = 4
+
+### Перевірка роботи сервера
+GET {{baseUrl}}/
+
+### Отримати весь список — 200
+GET {{baseUrl}}/postings
+
+### Отримати початковий запис — 200
+GET {{baseUrl}}/postings/1
+
+### Створити відправлення — 201 і Location
+POST {{baseUrl}}/postings
+Content-Type: application/json
+
+{"from":"Grace","to":"Henry","content":"Documents","deliveryType":0,"weight":1.5,"width":20,"height":10,"depth":5,"value":200,"price":30}
+
+### Отримати нове відправлення — 200
+GET {{baseUrl}}/postings/{{postingId}}
+
+### Оновити всі змінювані поля — 200
+PUT {{baseUrl}}/postings/{{postingId}}
+Content-Type: application/json
+
+{"from":"Grace Updated","to":"Henry Updated","content":"Updated documents","deliveryType":2,"weight":3.5,"width":40,"height":25,"depth":15,"value":300,"price":45}
+
+### Перевірити збережені зміни
+GET {{baseUrl}}/postings/{{postingId}}
+
+### Видалити — 204 без тіла
+DELETE {{baseUrl}}/postings/{{postingId}}
+
+### Повторний пошук — 404
+GET {{baseUrl}}/postings/{{postingId}}
+
+### Редагування відсутнього запису — 404
+PUT {{baseUrl}}/postings/999999
+Content-Type: application/json
+
+{"from":"Missing","to":"Nobody","content":"Absent"}
+
+### Видалення відсутнього запису — 404
+DELETE {{baseUrl}}/postings/999999

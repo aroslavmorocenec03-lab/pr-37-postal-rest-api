@@ -1,0 +1,64 @@
+Час: 2026-10-26T20:53:02.8489697+02:00
+Перевірка реальних HTTP-запитів до PostService.
+
+GET / -> HTTP 200
+Це API поштового клієнта.
+PASS 1: Кореневий маршрут із попередньої роботи збережено.
+
+GET /postings -> HTTP 200
+[{"id":1,"from":"Alice","to":"Bob","content":"Books","deliveryType":1,"weight":2.5,"width":30,"height":20,"depth":10,"value":50,"price":10,"createdAt":"2026-10-26T18:52:53.9259613Z"},{"id":2,"from":"Carol","to":"David","content":"Clothes","deliveryType":0,"weight":1.2,"width":25,"height":15,"depth":10,"value":100,"price":15,"createdAt":"2026-10-26T18:52:53.9260193Z"},{"id":3,"from":"Eve","to":"Frank","content":"Gift","deliveryType":2,"weight":0.8,"width":15,"height":15,"depth":15,"value":75,"price":20,"createdAt":"2026-10-26T18:52:53.9260196Z"}]
+PASS 2: Список із трьох тестових записів, усі 12 полів і JSON.
+
+POST /postings -> HTTP 201
+{"id":4,"from":"Grace","to":"Henry","content":"Documents","deliveryType":0,"weight":1.5,"width":20,"height":10,"depth":5,"value":200,"price":30,"createdAt":"2026-10-26T18:53:03.1876264Z"}
+PASS 3: POST повертає 201, Location, серверний Id та час UTC.
+
+GET /postings/4 -> HTTP 200
+{"id":4,"from":"Grace","to":"Henry","content":"Documents","deliveryType":0,"weight":1.5,"width":20,"height":10,"depth":5,"value":200,"price":30,"createdAt":"2026-10-26T18:53:03.1876264Z"}
+PASS 4: Створений запис доступний через GET за Id.
+
+PUT /postings/4 -> HTTP 200
+{"id":4,"from":"Grace Updated","to":"Henry Updated","content":"Updated documents","deliveryType":2,"weight":3.5,"width":40,"height":25,"depth":15,"value":300,"price":45,"createdAt":"2026-10-26T18:53:03.1876264Z"}
+PASS 5: PUT змінює всі 10 редагованих полів, зберігає Id і CreatedAt.
+
+GET /postings/4 -> HTTP 200
+{"id":4,"from":"Grace Updated","to":"Henry Updated","content":"Updated documents","deliveryType":2,"weight":3.5,"width":40,"height":25,"depth":15,"value":300,"price":45,"createdAt":"2026-10-26T18:53:03.1876264Z"}
+
+GET /postings/1 -> HTTP 200
+{"id":1,"from":"Alice","to":"Bob","content":"Books","deliveryType":1,"weight":2.5,"width":30,"height":20,"depth":10,"value":50,"price":10,"createdAt":"2026-10-26T18:52:53.9259613Z"}
+PASS 6: Зміни збережені, інший запис не змінено.
+
+DELETE /postings/4 -> HTTP 204
+PASS 7: DELETE повертає 204 без тіла.
+
+GET /postings/4 -> HTTP 404
+PASS 8: GET видаленого запису повертає 404.
+
+PUT /postings/4 -> HTTP 404
+PASS 9: PUT відсутнього запису повертає 404.
+
+DELETE /postings/4 -> HTTP 404
+PASS 10: DELETE відсутнього запису повертає 404.
+
+DELETE /postings/1 -> HTTP 204
+
+DELETE /postings/2 -> HTTP 204
+
+DELETE /postings/3 -> HTTP 204
+
+GET /postings -> HTTP 200
+[]
+PASS 11: GET порожнього списку повертає 200 та [].
+
+POST /postings -> HTTP 201
+{"id":5,"from":"Grace","to":"Henry","content":"Documents","deliveryType":0,"weight":1.5,"width":20,"height":10,"depth":5,"value":200,"price":30,"createdAt":"2026-10-26T18:53:03.2590377Z"}
+PASS 12: Додавання після видалення всіх записів працює, Id не повторюється.
+
+POST /postings -> HTTP 201
+{"id":6,"from":"Grace","to":"Henry","content":"Documents","deliveryType":0,"weight":1.5,"width":20,"height":10,"depth":5,"value":200,"price":30,"createdAt":"2026-10-26T18:53:03.2626172Z"}
+
+GET /postings -> HTTP 200
+[{"id":5,"from":"Grace","to":"Henry","content":"Documents","deliveryType":0,"weight":1.5,"width":20,"height":10,"depth":5,"value":200,"price":30,"createdAt":"2026-10-26T18:53:03.2590377Z"},{"id":6,"from":"Grace","to":"Henry","content":"Documents","deliveryType":0,"weight":1.5,"width":20,"height":10,"depth":5,"value":200,"price":30,"createdAt":"2026-10-26T18:53:03.2626172Z"}]
+PASS 13: Наступний POST отримує унікальний Id, обидва записи збережені.
+
+Успішно: 13/13 перевірок.
